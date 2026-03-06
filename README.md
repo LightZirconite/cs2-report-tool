@@ -55,10 +55,10 @@ Positions are saved to `data/positions.json` — this project does NOT ship cali
    - **Reason**: Aimbot / Wallhack / Other Hacking
    - **Delay**: seconds before the script starts (default: 5s)
    - **Repeat**: how many times to loop the report sequence (default: 1)
-   - **Action gap**: delay in milliseconds between each click (default: 500ms, minimum 120ms — increase to debug, decrease once calibrated)
+   - **Action gap**: delay in milliseconds between each click (default: 500ms, minimum 150ms — increase to debug, decrease once calibrated). If the user enters a value below the minimum, the tool will automatically use the minimum value and notify you in the terminal.
 3. Confirm, then **switch to CS2** during the countdown
 4. The script automatically performs: **Tab → Right-click → Click Report → Click Reason → Click Submit**
-5. During the countdown you can press `Escape` to cancel the run (requires the script's dependencies to be installed).
+5. During the countdown or execution you can press `Escape` to cancel the run (requires `pynput` to be installed).
 6. You'll hear a gentle beep sequence when it's done
 
 ## Default Positions (1920x1080 Fullscreen Windowed)

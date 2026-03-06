@@ -30,6 +30,7 @@ pyautogui.PAUSE = 0.05
 
 # Default delay between each click action (seconds)
 DEFAULT_ACTION_DELAY = 0.5
+MIN_ACTION_DELAY_MS = 150
 
 
 def clear_screen():
@@ -117,6 +118,19 @@ def execute_report(positions, side, players, reason, delay, repeat, action_delay
 
         # Report each selected player
         for player_num in players:
+            if cancel["value"]:
+                print("\n  ABORTED by user (Escape).")
+                try:
+                    pyautogui.keyUp("tab")
+                except Exception:
+                    pass
+                if listener:
+                    try:
+                        listener.stop()
+                    except Exception:
+                        pass
+                return
+
             print(f"  -> Reporting {side_label} Player {player_num}...")
             report_single_player(positions, side, player_num, reason, action_delay)
             time.sleep(action_delay)
@@ -126,13 +140,21 @@ def execute_report(positions, side, players, reason, delay, repeat, action_delay
             time.sleep(action_delay)
 
     # Release Tab to close scoreboard after all rounds
-    pyautogui.keyUp("tab")
+    try:
+        pyautogui.keyUp("tab")
+    except Exception:
+        pass
 
     # Gentle completion beep (3 ascending notes)
     if _WINSOUND:
         winsound.Beep(660, 120)
         winsound.Beep(880, 120)
         winsound.Beep(1040, 180)
+    if listener:
+        try:
+            listener.stop()
+        except Exception:
+            pass
     print()
     print("  Done!")
 
@@ -204,8 +226,11 @@ def prompt_action_delay():
     raw = input("  Delay between actions (ms) [500]: ").strip()
     try:
         ms = int(raw) if raw else 500
-        if ms < 120:
+        if ms < 0:
             raise ValueError
+        if ms < MIN_ACTION_DELAY_MS:
+            print(f"  Provided delay is below minimum ({MIN_ACTION_DELAY_MS} ms). Using {MIN_ACTION_DELAY_MS} ms instead.")
+            ms = MIN_ACTION_DELAY_MS
         return ms / 1000.0
     except ValueError:
         return None
@@ -257,7 +282,7 @@ def main_menu(positions):
         # Action delay
         action_delay = prompt_action_delay()
         if action_delay is None:
-            print("  Invalid delay (min 120ms).\n")
+            print("  Invalid delay.\n")
             continue
 
         # Summary
