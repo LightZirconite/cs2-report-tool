@@ -3,6 +3,16 @@ import os
 import time
 import ctypes
 import pyautogui
+try:
+    import winsound
+    _WINSOUND = True
+except ImportError:
+    _WINSOUND = False
+try:
+    from pynput import keyboard as _pynput_keyboard
+    _PYNPUT = True
+except Exception:
+    _PYNPUT = False
 
 # Fix DPI scaling on Windows — ensures clicks land at the correct position
 try:
@@ -19,7 +29,7 @@ pyautogui.FAILSAFE = True
 pyautogui.PAUSE = 0.05
 
 # Default delay between each click action (seconds)
-DEFAULT_ACTION_DELAY = 1.0
+DEFAULT_ACTION_DELAY = 0.5
 
 
 def clear_screen():
@@ -59,27 +69,51 @@ def report_single_player(positions, side, player_num, reason, action_delay):
 
 def execute_report(positions, side, players, reason, delay, repeat, action_delay):
     """Countdown, open scoreboard, report all selected players, close scoreboard."""
-    # Countdown
+    # Countdown (user can press Escape to cancel if pynput is available)
     print()
     print("  >>> Switch to CS2 now! <<<")
+    cancel = {"value": False}
+
+    def _on_press(key):
+        try:
+            if key == _pynput_keyboard.Key.esc:
+                cancel["value"] = True
+                return False
+        except Exception:
+            pass
+
+    listener = None
+    if _PYNPUT:
+        try:
+            listener = _pynput_keyboard.Listener(on_press=_on_press)
+            listener.start()
+        except Exception:
+            listener = None
+
     for i in range(delay, 0, -1):
+        if cancel["value"]:
+            print("  Cancelled by user (Escape).          ")
+            if listener:
+                try:
+                    listener.stop()
+                except Exception:
+                    pass
+            return
         print(f"  Starting in {i}...   ", end="\r")
         time.sleep(1)
     print("  Executing...             ")
 
     side_label = "CT" if side == "ct" else "T"
 
+    # Open scoreboard and activate cursor once for all rounds
+    pyautogui.keyDown("tab")
+    time.sleep(action_delay)
+    pyautogui.rightClick()
+    time.sleep(action_delay)
+
     for run in range(1, repeat + 1):
         if repeat > 1:
             print(f"  --- Round {run}/{repeat} ---")
-
-        # Open scoreboard
-        pyautogui.keyDown("tab")
-        time.sleep(action_delay)
-
-        # Right-click to activate cursor on scoreboard
-        pyautogui.rightClick()
-        time.sleep(action_delay)
 
         # Report each selected player
         for player_num in players:
@@ -87,15 +121,18 @@ def execute_report(positions, side, players, reason, delay, repeat, action_delay
             report_single_player(positions, side, player_num, reason, action_delay)
             time.sleep(action_delay)
 
-        # Release Tab to close scoreboard
-        pyautogui.keyUp("tab")
-
-        # Small pause between rounds
+        # Small pause between rounds (skip after last)
         if run < repeat:
             time.sleep(action_delay)
 
-    # Audible beep to signal completion
-    print("\a", end="")
+    # Release Tab to close scoreboard after all rounds
+    pyautogui.keyUp("tab")
+
+    # Gentle completion beep (3 ascending notes)
+    if _WINSOUND:
+        winsound.Beep(660, 120)
+        winsound.Beep(880, 120)
+        winsound.Beep(1040, 180)
     print()
     print("  Done!")
 
@@ -164,10 +201,10 @@ def prompt_repeat():
 
 def prompt_action_delay():
     """Prompt user for delay between each click action (ms). Return float seconds or None."""
-    raw = input("  Delay between actions (ms) [1000]: ").strip()
+    raw = input("  Delay between actions (ms) [500]: ").strip()
     try:
-        ms = int(raw) if raw else 1000
-        if ms < 100:
+        ms = int(raw) if raw else 500
+        if ms < 120:
             raise ValueError
         return ms / 1000.0
     except ValueError:
@@ -220,7 +257,7 @@ def main_menu(positions):
         # Action delay
         action_delay = prompt_action_delay()
         if action_delay is None:
-            print("  Invalid delay (min 100ms).\n")
+            print("  Invalid delay (min 120ms).\n")
             continue
 
         # Summary

@@ -44,7 +44,7 @@ Built with Python because it's the simplest cross-setup solution for this kind o
 - Press **F6** to capture the position
 - Repeat for each step
 
-Positions are saved to `data/positions.json`. This file ships with default positions for **1920x1080 Windowed**, but you should recalibrate for your own setup.
+Positions are saved to `data/positions.json` — this project does NOT ship calibrated position files by default. You must run the calibration step for your own machine and resolution. Run `calibrate.bat` to generate `data/positions.json` for your setup.
 
 ### 2. Reporting
 
@@ -55,14 +55,15 @@ Positions are saved to `data/positions.json`. This file ships with default posit
    - **Reason**: Aimbot / Wallhack / Other Hacking
    - **Delay**: seconds before the script starts (default: 5s)
    - **Repeat**: how many times to loop the report sequence (default: 1)
-   - **Action gap**: delay in milliseconds between each click (default: 1000ms — increase to debug, decrease once calibrated)
+   - **Action gap**: delay in milliseconds between each click (default: 500ms, minimum 120ms — increase to debug, decrease once calibrated)
 3. Confirm, then **switch to CS2** during the countdown
 4. The script automatically performs: **Tab → Right-click → Click Report → Click Reason → Click Submit**
-5. You'll hear a beep when it's done
+5. During the countdown you can press `Escape` to cancel the run (requires the script's dependencies to be installed).
+6. You'll hear a gentle beep sequence when it's done
 
 ## Default Positions (1920x1080 Fullscreen Windowed)
 
-The included `data/positions.json` contains pre-calibrated positions for 1920x1080. If your resolution differs, just run `calibrate.bat` — the tool adapts to any resolution.
+The included `data/positions.json` contains pre-calibrated positions for 1920x1080 as an example. You should recalibrate for your own setup by running `calibrate.bat` if your resolution or UI scale differs — the tool adapts to any resolution.
 
 ## Project Structure
 
@@ -111,3 +112,12 @@ You are free to use, modify, and redistribute this project — including for for
 - You cannot sublicense or relicense it under proprietary terms.
 
 See the [LICENSE](LICENSE) file for the full license text.
+
+## Educational Use & Disclaimer
+
+- **Educational purpose only:** This software is provided for learning and automation experimentation. It is not intended to enable cheating or to bypass any game's security measures.
+- **Use at your own risk:** The authors make no guarantees that use of this tool will not result in account penalties, restrictions, or other adverse consequences. You are responsible for complying with the game's Terms of Service and community rules.
+- **No liability:** The project authors and contributors disclaim any liability for damages or losses arising from use or misuse of this software. There are no warranties of any kind.
+- **Responsible use recommended:** Do not use this tool in competitive, ranked, or online environments where automation could cause harm or violate rules. Prefer using it in safe, local, or educational contexts only.
+
+If you are unsure whether using this tool is appropriate for your situation, do not use it and consult the game's support or terms.
