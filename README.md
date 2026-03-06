@@ -44,7 +44,7 @@ Built with Python because it's the simplest cross-setup solution for this kind o
 - Press **F6** to capture the position
 - Repeat for each step
 
-Positions are saved to `data/positions.json`. This file ships with default positions for **1920x1080 Fullscreen Windowed**, but you should recalibrate for your own setup.
+Positions are saved to `data/positions.json`. This file ships with default positions for **1920x1080 Windowed**, but you should recalibrate for your own setup.
 
 ### 2. Reporting
 
@@ -60,7 +60,7 @@ Positions are saved to `data/positions.json`. This file ships with default posit
 4. The script automatically performs: **Tab → Right-click → Click Report → Click Reason → Click Submit**
 5. You'll hear a beep when it's done
 
-## Default Positions (1920x1080 Windowed)
+## Default Positions (1920x1080 Fullscreen Windowed)
 
 The included `data/positions.json` contains pre-calibrated positions for 1920x1080. If your resolution differs, just run `calibrate.bat` — the tool adapts to any resolution.
 
