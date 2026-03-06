@@ -60,7 +60,7 @@ Positions are saved to `data/positions.json`. This file ships with default posit
 4. The script automatically performs: **Tab → Right-click → Click Report → Click Reason → Click Submit**
 5. You'll hear a beep when it's done
 
-## Default Positions (1920x1080 Fullscreen Windowed)
+## Default Positions (1920x1080 Windowed)
 
 The included `data/positions.json` contains pre-calibrated positions for 1920x1080. If your resolution differs, just run `calibrate.bat` — the tool adapts to any resolution.
 
